@@ -17,12 +17,15 @@ func getCourseSyllabus(url string) string {
 	c.OnHTML("div.SyllabusModule", func(e *colly.HTMLElement) {
 		e.ForEach("h1", func(_ int, f *colly.HTMLElement) {
 			fmt.Println(f.Text)
-
 		})
 
 		e.ForEach("div.SyllabusModuleDetails div.items div", func(_ int, g *colly.HTMLElement) {
 			if !strings.HasPrefix(g.Attr("class"), "Box") {
-				fmt.Println(g.Text)
+				dom := g.DOM
+				time := dom.Find("span span").Text()
+				title := strings.TrimSuffix(dom.Text(), time)
+				fmt.Println(title)
+				fmt.Println(time)
 			}
 		})
 	})
