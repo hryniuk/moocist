@@ -7,6 +7,20 @@ import (
 	"github.com/gocolly/colly"
 )
 
+type Task struct {
+	Title    string
+	Duration string
+}
+
+type Week struct {
+	Title string
+	Tasks []Task
+}
+
+type Course struct {
+	Weeks []Week
+}
+
 func getCourseSyllabus(url string) string {
 	c := colly.NewCollector(
 		colly.AllowedDomains("coursera.org", "www.coursera.org"),
