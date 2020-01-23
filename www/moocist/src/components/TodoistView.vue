@@ -3,31 +3,28 @@
     <v-layout justify-right align-left column pa-5>
       <v-card max-width="600" class="mx-auto">
         <v-toolbar color="red" dark>
-          <v-app-bar-nav-icon></v-app-bar-nav-icon>
-          <v-toolbar-title>Todoist Preview</v-toolbar-title>
+          <v-btn icon>
+            <v-icon>mdi-check-underline-circle</v-icon>
+          </v-btn>
+
+          <v-toolbar-title>{{title}}</v-toolbar-title>
           <v-spacer></v-spacer>
         </v-toolbar>
 
         <v-list>
-          <!-- <v-list-item-group> -->
-            <template v-for="item in items">
-              <v-list-item :key="item.title">
-                <template>
-                  <v-btn icon>
-                    <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
-                  </v-btn>
+          <template v-for="item in items">
+            <v-list-item :key="item">
+              <template>
+                <v-btn icon>
+                  <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
+                </v-btn>
 
-                  <v-list-item-content>
-                    <v-list-item-title v-text="item"></v-list-item-title>
-                    <!-- <v-list-item-subtitle class="text--primary" v-text="item.headline"></v-list-item-subtitle>
-                    <v-list-item-subtitle v-text="item.subtitle"></v-list-item-subtitle> -->
-                  </v-list-item-content>
-                </template>
-              </v-list-item>
-
-              <!-- <v-divider v-if="index + 1 < items.length" :key="index"></v-divider> -->
-            </template>
-          <!-- </v-list-item-group> -->
+                <v-list-item-content>
+                  <v-list-item-title>{{item}}</v-list-item-title>
+                </v-list-item-content>
+              </template>
+            </v-list-item>
+          </template>
         </v-list>
       </v-card>
     </v-layout>
@@ -40,7 +37,7 @@ export default {
   data: () => ({
     title: "Course Title",
     items: ["Video 1", "Video 2", "Video 3"],
-    count: 3,
+    count: 3
   })
 };
 </script>
