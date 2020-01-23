@@ -8,8 +8,8 @@
           <v-spacer></v-spacer>
         </v-toolbar>
 
-        <v-list two-line>
-          <v-list-item-group>
+        <v-list>
+          <!-- <v-list-item-group> -->
             <template v-for="item in items">
               <v-list-item :key="item.title">
                 <template>
@@ -27,7 +27,7 @@
 
               <!-- <v-divider v-if="index + 1 < items.length" :key="index"></v-divider> -->
             </template>
-          </v-list-item-group>
+          <!-- </v-list-item-group> -->
         </v-list>
       </v-card>
     </v-layout>
@@ -40,7 +40,7 @@ export default {
   data: () => ({
     title: "Course Title",
     items: ["Video 1", "Video 2", "Video 3"],
-    count: 3
+    count: 3,
   })
 };
 </script>
