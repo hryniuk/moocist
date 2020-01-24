@@ -25,10 +25,19 @@ github.com/gocolly/colly/storage
 github.com/golang/groupcache/lru
 # github.com/golang/protobuf v1.3.1
 github.com/golang/protobuf/proto
+# github.com/gomodule/redigo v2.0.0+incompatible
+github.com/gomodule/redigo/internal
+github.com/gomodule/redigo/redis
+# github.com/gorilla/mux v1.7.3
+github.com/gorilla/mux
 # github.com/kennygrant/sanitize v1.2.4
 github.com/kennygrant/sanitize
+# github.com/konsorten/go-windows-terminal-sequences v1.0.1
+github.com/konsorten/go-windows-terminal-sequences
 # github.com/saintfish/chardet v0.0.0-20120816061221-3af4cd4741ca
 github.com/saintfish/chardet
+# github.com/sirupsen/logrus v1.4.2
+github.com/sirupsen/logrus
 # github.com/temoto/robotstxt v1.1.1
 github.com/temoto/robotstxt
 # golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa
@@ -36,6 +45,8 @@ golang.org/x/net/context
 golang.org/x/net/html
 golang.org/x/net/html/atom
 golang.org/x/net/html/charset
+# golang.org/x/sys v0.0.0-20190422165155-953cdadca894
+golang.org/x/sys/unix
 # golang.org/x/text v0.3.2
 golang.org/x/text/encoding
 golang.org/x/text/encoding/charmap

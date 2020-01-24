@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/gocolly/colly"
+	log "github.com/sirupsen/logrus"
 )
 
 type Task struct {
@@ -17,11 +18,13 @@ type Week struct {
 	Tasks []Task
 }
 
-type Course struct {
+type CourseSyllabus struct {
 	Weeks []Week
 }
 
-func getCourseSyllabus(url string) string {
+func getCourseSyllabus(url string) CourseSyllabus {
+	cs := CourseSyllabus{}
+
 	c := colly.NewCollector(
 		colly.AllowedDomains("coursera.org", "www.coursera.org"),
 		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36"),
@@ -29,19 +32,28 @@ func getCourseSyllabus(url string) string {
 	)
 
 	c.OnHTML("div.SyllabusModule", func(e *colly.HTMLElement) {
+		week := Week{}
+
 		e.ForEach("h1", func(_ int, f *colly.HTMLElement) {
-			fmt.Println(f.Text)
+			if week.Title != "" {
+				log.Error("setting week title more than once")
+			}
+			week.Title = f.Text
 		})
 
 		e.ForEach("div.SyllabusModuleDetails div.items div", func(_ int, g *colly.HTMLElement) {
 			if !strings.HasPrefix(g.Attr("class"), "Box") {
 				dom := g.DOM
-				time := dom.Find("span span").Text()
-				title := strings.TrimSuffix(dom.Text(), time)
-				fmt.Println(title)
-				fmt.Println(time)
+				duration := dom.Find("span span").Text()
+				title := strings.TrimSuffix(dom.Text(), duration)
+				task := Task{Title: title, Duration: duration}
+				log.Debugf("adding task %s %s", title, duration)
+
+				week.Tasks = append(week.Tasks, task)
 			}
 		})
+
+		cs.Weeks = append(cs.Weeks, week)
 	})
 
 	c.OnRequest(func(r *colly.Request) {
@@ -50,5 +62,5 @@ func getCourseSyllabus(url string) string {
 
 	c.Visit(url)
 
-	return ""
+	return cs
 }
