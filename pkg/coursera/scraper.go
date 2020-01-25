@@ -9,17 +9,17 @@ import (
 )
 
 type Task struct {
-	Title    string
-	Duration string
+	Title    string `json:"title"`
+	Duration string `json:"duration"`
 }
 
 type Week struct {
-	Title string
-	Tasks []Task
+	Title string `json:"title"`
+	Tasks []Task `json:"tasks"`
 }
 
 type CourseSyllabus struct {
-	Weeks []Week
+	Weeks []Week `json:"weeks"`
 }
 
 func getCourseSyllabus(url string) CourseSyllabus {
@@ -35,6 +35,13 @@ func getCourseSyllabus(url string) CourseSyllabus {
 		week := Week{}
 
 		e.ForEach("h1", func(_ int, f *colly.HTMLElement) {
+			if week.Title != "" {
+				log.Error("setting week title more than once")
+			}
+			week.Title = f.Text
+		})
+
+		e.ForEach("h2", func(_ int, f *colly.HTMLElement) {
 			if week.Title != "" {
 				log.Error("setting week title more than once")
 			}
