@@ -75,6 +75,21 @@ func (s *Server) routes(router *mux.Router) {
 	router.HandleFunc("/course/{slug}", s.course()).Methods("GET")
 }
 
+func handleCORS(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		w.Header().Set(
+			"Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		if (*r).Method == "OPTIONS" {
+			// TODO: handle it in a correct manner, set proper status code etc.
+			return
+		}
+
+		h.ServeHTTP(w, r)
+	})
+}
+
 func logging(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		startTime := time.Now()
@@ -111,7 +126,7 @@ func NewServer() *Server {
 	router := mux.NewRouter()
 	s := &Server{dbConn: conn}
 	s.routes(router)
-	s.Router = tracing(logging(router))
+	s.Router = tracing(logging(handleCORS(router)))
 
 	return s
 }
