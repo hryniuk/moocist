@@ -1,8 +1,7 @@
 <template>
   <v-app>
     <v-content>
-      {{info}}
-      <TodoistView />
+      <TodoistView :courses="info" />
     </v-content>
   </v-app>
 </template>
@@ -27,7 +26,7 @@ export default {
     axios
       .get("http://localhost:8181/course/inferential-statistics-intro")
       .then(response => {
-        this.info = response;
+        this.info = response.data;
       });
   }
 };
