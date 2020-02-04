@@ -8,6 +8,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+const addr = "127.0.0.1:8181"
+
 func initLogging() {
 	logrus.SetLevel(logrus.DebugLevel)
 	customFormatter := new(logrus.TextFormatter)
@@ -21,9 +23,10 @@ func main() {
 	server := api.NewServer()
 
 	httpServer := &http.Server{
-		Addr:    "127.0.0.1:8181",
+		Addr:    addr,
 		Handler: server.Router,
 	}
 
+	log.Printf("starting server at %s", addr)
 	log.Fatal(httpServer.ListenAndServe())
 }
