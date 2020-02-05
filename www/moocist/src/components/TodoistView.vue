@@ -1,6 +1,5 @@
 <template>
-  <v-container fluid fill-height class="todist-view">
-    <v-layout justify-right align-left column pa-5>
+    <v-row justify-right align-left column pa-5>
       <v-card max-width="600" class="mx-auto">
         <v-toolbar color="red" dark>
           <v-btn icon>
@@ -32,8 +31,7 @@
           </v-list-group>
         </v-list>
       </v-card>
-    </v-layout>
-  </v-container>
+    </v-row>
 </template>
 
 <script>
