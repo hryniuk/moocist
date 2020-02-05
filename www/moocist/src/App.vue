@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-content>
-      <TodoistView :courses="info" />
+      <TodoistView :course="info" />
     </v-content>
   </v-app>
 </template>
@@ -19,7 +19,7 @@ export default {
   },
 
   data: () => ({
-    info: null
+    info: {}
   }),
 
   mounted() {

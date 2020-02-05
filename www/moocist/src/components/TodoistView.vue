@@ -7,34 +7,30 @@
             <v-icon>mdi-check-underline-circle</v-icon>
           </v-btn>
 
-          <v-toolbar-title>{{title}}</v-toolbar-title>
           <v-spacer></v-spacer>
+          <v-toolbar-title>{{title}}</v-toolbar-title>
         </v-toolbar>
 
-          <template v-for="week in courses.weeks">
-            <v-list-item :key="week">
-              <template>
-                  <v-list-item-title>{{week.title}}</v-list-item-title>
-              </template>
-              <!-- <v-list> -->
-            <v-list>
-              <template v-for="task in week.tasks">
-                <v-list-item :key="task">
-                  <template>
-                    <v-btn icon>
-                      <v-icon>mdi-checkbox-blank-circle-outline</v-icon>
-                    </v-btn>
+        <v-list>
+          <v-list-group
+            v-for="week in course.weeks"
+            :key="week.title"
+            v-model="week.active"
+            no-action
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title v-text="week.title"></v-list-item-title>
+              </v-list-item-content>
+            </template>
 
-                    <v-list-item-content>
-                      <v-list-item-title>{{task.title}}</v-list-item-title>
-                    </v-list-item-content>
-                  </template>
-                </v-list-item>
-              </template>
-            </v-list>
-              <!-- </v-list> -->
+            <v-list-item v-for="(task, i) in week.tasks" :key="i">
+              <v-list-item-content>
+                <v-list-item-title v-text="task.title"></v-list-item-title>
+              </v-list-item-content>
             </v-list-item>
-          </template>
+          </v-list-group>
+        </v-list>
       </v-card>
     </v-layout>
   </v-container>
@@ -43,11 +39,16 @@
 <script>
 export default {
   name: "TodoistView",
-  props: ["courses"],
+  props: {
+    course: {
+      type: Object,
+      default: () => ({
+        weeks: []
+      })
+    }
+  },
   data: () => ({
-    title: "Course Title",
-    items: ["Video 1", "Video 2", "Video 3"],
-    count: 3
+    title: "Course"
   })
 };
 </script>
