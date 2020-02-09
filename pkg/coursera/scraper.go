@@ -1,15 +1,16 @@
 package coursera
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/gocolly/colly"
 	log "github.com/sirupsen/logrus"
+
+	"github.com/hryniuk/moocist/pkg/mooc"
 )
 
-func getCourseSyllabus(url string) CourseSyllabus {
-	cs := CourseSyllabus{}
+func getCourseSyllabus(url string) (mooc.CourseSyllabus, error) {
+	cs := mooc.CourseSyllabus{}
 
 	c := colly.NewCollector(
 		colly.AllowedDomains("coursera.org", "www.coursera.org"),
@@ -18,7 +19,7 @@ func getCourseSyllabus(url string) CourseSyllabus {
 	)
 
 	c.OnHTML("div.SyllabusModule", func(e *colly.HTMLElement) {
-		week := Week{}
+		week := mooc.Week{}
 
 		e.ForEach("h1", func(_ int, f *colly.HTMLElement) {
 			if week.Title != "" {
@@ -39,7 +40,7 @@ func getCourseSyllabus(url string) CourseSyllabus {
 				dom := g.DOM
 				duration := dom.Find("span span").Text()
 				title := strings.TrimSuffix(dom.Text(), duration)
-				task := Task{Title: title, Duration: duration}
+				task := mooc.Task{Title: title, Duration: duration}
 				log.Debugf("adding task %s %s", title, duration)
 
 				week.Tasks = append(week.Tasks, task)
@@ -49,11 +50,7 @@ func getCourseSyllabus(url string) CourseSyllabus {
 		cs.Weeks = append(cs.Weeks, week)
 	})
 
-	c.OnRequest(func(r *colly.Request) {
-		fmt.Println("Visiting", r.URL)
-	})
-
 	c.Visit(url)
 
-	return cs
+	return cs, cs.Validate()
 }
