@@ -13,3 +13,11 @@ type Week struct {
 type CourseSyllabus struct {
 	Weeks []Week `json:"weeks"`
 }
+
+type Importer interface {
+	Import() (CourseSyllabus, error)
+}
+
+type Exporter interface {
+	Export(CourseSyllabus) ([]byte, error)
+}
