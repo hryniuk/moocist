@@ -19,5 +19,5 @@ var importCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(importCmd)
 
-	importCmd.PersistentFlags().String("foo", "", "A help for foo")
+	importCmd.PersistentFlags().String("--coursera-slug", "", "Get Coursera MOOC with a given slug (e.g. creative-writing)")
 }
