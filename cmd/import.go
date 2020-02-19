@@ -24,9 +24,12 @@ var importCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		var importer mooc.Importer
 
-		if len(courseraSlug) > 0 {
-			importer = &coursera.SlugImporter{Slug: courseraSlug}
+		if len(courseraSlug) == 0 {
+			log.Errorf("pass course slug")
+			return
 		}
+
+		importer = &coursera.SlugImporter{Slug: courseraSlug}
 
 		courseSyllabus, err := importer.Import()
 		if err != nil {
