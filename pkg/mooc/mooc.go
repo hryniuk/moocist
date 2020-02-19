@@ -1,9 +1,12 @@
 package mooc
 
 import (
+	"bytes"
+	"encoding/csv"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
 )
 
 type Task struct {
@@ -61,4 +64,39 @@ type JsonExporter struct {
 
 func (e *JsonExporter) Export(cs CourseSyllabus) ([]byte, error) {
 	return json.Marshal(cs)
+}
+
+type CSVExporter struct {
+}
+
+func weekToCSV(w Week) []string {
+	return []string{"task", "**" + w.Title + "**:", "", "", "", "", "", "", ""}
+}
+
+func taskToCSV(t Task) []string {
+	return []string{"task", t.Title, "", "", "", "", "", "", ""}
+}
+
+func (e *CSVExporter) Export(cs CourseSyllabus) ([]byte, error) {
+	header := []string{"TYPE", "CONTENT", "PRIORITY", "INDENT", "AUTHOR", "RESPONSIBLE", "DATE", "DATE_LANG", "TIMEZONE"}
+	records := [][]string{
+		header,
+	}
+
+	for _, week := range cs.Weeks {
+		records = append(records, weekToCSV(week))
+		for _, task := range week.Tasks {
+			records = append(records, taskToCSV(task))
+		}
+	}
+
+	b := bytes.NewBuffer([]byte{})
+	w := csv.NewWriter(b)
+	w.WriteAll(records)
+
+	if err := w.Error(); err != nil {
+		log.Fatalln("error writing csv:", err)
+		return []byte{}, err
+	}
+	return b.Bytes(), nil
 }
