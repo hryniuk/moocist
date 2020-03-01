@@ -14,6 +14,7 @@ import (
 var (
 	courseraSlug string
 	quiet        bool
+	priority     int
 )
 
 // importCmd represents the import command

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"github.com/hryniuk/moocist/pkg/coursera"
 	"github.com/hryniuk/moocist/pkg/mooc"
@@ -31,7 +32,13 @@ var templateCmd = &cobra.Command{
 			os.Exit(1)
 		}
 
-		exporter := mooc.CSVExporter{}
+		if priority < 1 || priority > 4 {
+			log.Errorf("priority should have integer value between 1 and 4, got %d", priority)
+			os.Exit(1)
+		}
+		priorityString := strconv.Itoa(priority)
+
+		exporter := mooc.CSVExporter{TaskPriority: priorityString}
 		jsonBytes, err := exporter.Export(courseSyllabus)
 		if err != nil {
 			log.Errorf("cannot marshal course syllabus as JSON: %s", err)
@@ -51,4 +58,5 @@ func init() {
 
 	templateCmd.PersistentFlags().StringVar(&courseraSlug, "coursera-slug", "", "Get Coursera MOOC with a given slug (e.g. creative-writing)")
 	templateCmd.PersistentFlags().BoolVar(&quiet, "quiet", false, "Quiet run (no output)")
+	templateCmd.PersistentFlags().IntVar(&priority, "priority", 1, "Tasks priority (1/2/3/4)")
 }

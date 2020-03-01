@@ -66,15 +66,25 @@ func (e *JsonExporter) Export(cs CourseSyllabus) ([]byte, error) {
 	return json.Marshal(cs)
 }
 
+type Priority uint8
+
+const (
+	PriorityRed Priority = iota + 1
+	PriorityYellow
+	PriorityBlue
+	PriorityGrey
+)
+
 type CSVExporter struct {
+	TaskPriority string
 }
 
-func weekToCSV(w Week) []string {
+func (e *CSVExporter) weekToCSV(w Week) []string {
 	return []string{"task", "**" + w.Title + "**:", "", "", "", "", "", "", ""}
 }
 
-func taskToCSV(t Task) []string {
-	return []string{"task", t.Title, "", "", "", "", "", "", ""}
+func (e *CSVExporter) taskToCSV(t Task) []string {
+	return []string{"task", t.Title, string(e.TaskPriority), "", "", "", "", "", ""}
 }
 
 func (e *CSVExporter) Export(cs CourseSyllabus) ([]byte, error) {
@@ -84,9 +94,9 @@ func (e *CSVExporter) Export(cs CourseSyllabus) ([]byte, error) {
 	}
 
 	for _, week := range cs.Weeks {
-		records = append(records, weekToCSV(week))
+		records = append(records, e.weekToCSV(week))
 		for _, task := range week.Tasks {
-			records = append(records, taskToCSV(task))
+			records = append(records, e.taskToCSV(task))
 		}
 	}
 
