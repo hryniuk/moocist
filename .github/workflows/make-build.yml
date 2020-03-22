@@ -1,4 +1,4 @@
-name: make ut
+name: make build
 on:
   push:
     branches: [ master ]
