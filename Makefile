@@ -2,6 +2,10 @@
 build: ## Builds moocist binary
 	go build
 
+.PHONY: ut
+ut: ## Runs all unit tests found in the project
+	go test ./...
+
 .PHONY: test
 test: ## Runs tests on courses from test_slugs.txt file
 	./test.sh
