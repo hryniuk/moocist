@@ -91,7 +91,7 @@ type Task struct {
 	No       uint32
 	Title    string
 	Type     string
-	Date     string
+	Date     time.Time
 }
 
 type ExportOptions struct {
@@ -105,9 +105,25 @@ type TodoistExporter struct {
 	Opt ExportOptions
 }
 
+func isWeekendDay(t time.Time) bool {
+	return t.Weekday() == time.Saturday || t.Weekday() == time.Sunday
+}
+
+func nextDay(t time.Time, skipWeekends bool) time.Time {
+	next := t
+
+	next = next.AddDate(0, 0, 1)
+	for skipWeekends && isWeekendDay(next) {
+		next = next.AddDate(0, 0, 1)
+	}
+
+	return next
+}
+
 func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 	taskNo := uint32(0)
 	var tasks []Task
+	taskDate := e.Opt.StartingDate
 
 	for _, week := range cs.Weeks {
 		weekTask := Task{
@@ -123,8 +139,9 @@ func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 				No:       taskNo,
 				Title:    item.Title,
 				Type:     Regular,
-				Date:     "01/10/2010",
+				Date:     taskDate,
 			}
+			taskDate = nextDay(taskDate, e.Opt.SkipWeekends)
 			tasks = append(tasks, itemTask)
 		}
 	}
@@ -133,7 +150,8 @@ func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 }
 
 func (e *TodoistExporter) taskToCSV(t Task) []string {
-	return []string{"task", t.Title, string(t.Priority), "", "", "", t.Date, "", ""}
+	dateFormat := "02/01/2006"
+	return []string{"task", t.Title, string(t.Priority), "", "", "", t.Date.Format(dateFormat), "", ""}
 }
 
 func (e *TodoistExporter) Export(cs CourseSyllabus) ([]byte, error) {
