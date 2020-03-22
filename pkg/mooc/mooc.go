@@ -7,16 +7,17 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"time"
 )
 
-type Task struct {
+type Item struct {
 	Title    string `json:"title"`
 	Duration string `json:"duration"`
 }
 
 type Week struct {
 	Title string `json:"title"`
-	Tasks []Task `json:"tasks"`
+	Items []Item `json:"items"`
 }
 
 type CourseSyllabus struct {
@@ -33,11 +34,11 @@ func (cs CourseSyllabus) Validate() error {
 			return fmt.Errorf("empty title in week with index %d", i)
 		}
 
-		if len(week.Tasks) == 0 {
+		if len(week.Items) == 0 {
 			return fmt.Errorf("empty tasks in week with index %d", i)
 		}
 
-		for j, task := range week.Tasks {
+		for j, task := range week.Items {
 			if len(task.Title) == 0 {
 				return fmt.Errorf("empty title in task with index %d in week index %d", j, i)
 			}
@@ -69,35 +70,81 @@ func (e *JsonExporter) Export(cs CourseSyllabus) ([]byte, error) {
 type Priority uint8
 
 const (
-	PriorityRed Priority = iota + 1
+	PriorityNone Priority = iota
+	PriorityRed
 	PriorityYellow
 	PriorityBlue
 	PriorityGrey
 )
 
-type CSVExporter struct {
-	TaskPriority string
+const (
+	TopLevel = "week"
+	Regular  = "task"
+)
+
+// Task is a Todoist equivalent of a MOOC "item":
+//  * week info
+//  * lecture video
+//  * quiz etc.
+type Task struct {
+	Priority Priority
+	No       uint32
+	Title    string
+	Type     string
+	Date     string
 }
 
-func (e *CSVExporter) weekToCSV(w Week) []string {
-	return []string{"task", "**" + w.Title + "**:", "", "", "", "", "", "", ""}
+type ExportOptions struct {
+	TaskPriority Priority
+	StartingDate time.Time
+	TasksPerDay  uint32
+	SkipWeekends bool
 }
 
-func (e *CSVExporter) taskToCSV(t Task) []string {
-	return []string{"task", t.Title, string(e.TaskPriority), "", "", "", "", "", ""}
+type TodoistExporter struct {
+	Opt ExportOptions
 }
 
-func (e *CSVExporter) Export(cs CourseSyllabus) ([]byte, error) {
+func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
+	taskNo := uint32(0)
+	var tasks []Task
+
+	for _, week := range cs.Weeks {
+		weekTask := Task{
+			Priority: PriorityNone,
+			No:       taskNo,
+			Title:    week.Title,
+		}
+		tasks = append(tasks, weekTask)
+
+		for _, item := range week.Items {
+			itemTask := Task{
+				Priority: e.Opt.TaskPriority,
+				No:       taskNo,
+				Title:    item.Title,
+				Type:     Regular,
+				Date:     "01/10/2010",
+			}
+			tasks = append(tasks, itemTask)
+		}
+	}
+
+	return tasks
+}
+
+func (e *TodoistExporter) taskToCSV(t Task) []string {
+	return []string{"task", t.Title, string(t.Priority), "", "", "", t.Date, "", ""}
+}
+
+func (e *TodoistExporter) Export(cs CourseSyllabus) ([]byte, error) {
 	header := []string{"TYPE", "CONTENT", "PRIORITY", "INDENT", "AUTHOR", "RESPONSIBLE", "DATE", "DATE_LANG", "TIMEZONE"}
 	records := [][]string{
 		header,
 	}
 
-	for _, week := range cs.Weeks {
-		records = append(records, e.weekToCSV(week))
-		for _, task := range week.Tasks {
-			records = append(records, e.taskToCSV(task))
-		}
+	tasks := e.toTasks(cs)
+	for _, task := range tasks {
+		records = append(records, e.taskToCSV(task))
 	}
 
 	b := bytes.NewBuffer([]byte{})

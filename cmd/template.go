@@ -3,7 +3,6 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"strconv"
 
 	"github.com/hryniuk/moocist/pkg/coursera"
 	"github.com/hryniuk/moocist/pkg/mooc"
@@ -36,9 +35,7 @@ var templateCmd = &cobra.Command{
 			log.Errorf("priority should have integer value between 1 and 4, got %d", priority)
 			os.Exit(1)
 		}
-		priorityString := strconv.Itoa(priority)
-
-		exporter := mooc.CSVExporter{TaskPriority: priorityString}
+		exporter := mooc.TodoistExporter{mooc.ExportOptions{TaskPriority: mooc.Priority(priority)}}
 		jsonBytes, err := exporter.Export(courseSyllabus)
 		if err != nil {
 			log.Errorf("cannot marshal course syllabus as JSON: %s", err)

@@ -40,10 +40,10 @@ func getCourseSyllabus(url string) (mooc.CourseSyllabus, error) {
 				dom := g.DOM
 				duration := dom.Find("span span").Text()
 				title := strings.TrimSuffix(dom.Text(), duration)
-				task := mooc.Task{Title: title, Duration: duration}
+				item := mooc.Item{Title: title, Duration: duration}
 				log.Debugf("adding task %s %s", title, duration)
 
-				week.Tasks = append(week.Tasks, task)
+				week.Items = append(week.Items, item)
 			}
 		})
 
