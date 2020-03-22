@@ -1,3 +1,6 @@
+.PHONY: default
+default: build ut ## Default target - builds and runs UTs
+
 .PHONY: build
 build: ## Builds moocist binary
 	go build
