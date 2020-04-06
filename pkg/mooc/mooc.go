@@ -42,10 +42,6 @@ func (cs CourseSyllabus) Validate() error {
 			if len(task.Title) == 0 {
 				return fmt.Errorf("empty title in task with index %d in week index %d", j, i)
 			}
-
-			if len(task.Duration) == 0 {
-				return fmt.Errorf("empty duration in task with index %d in week index %d", j, i)
-			}
 		}
 	}
 
