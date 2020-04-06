@@ -125,6 +125,7 @@ func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 		weekTask := Task{
 			Priority: PriorityNone,
 			No:       taskNo,
+			Type:     TopLevel,
 			Title:    week.Title,
 		}
 		tasks = append(tasks, weekTask)
