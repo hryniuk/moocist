@@ -34,6 +34,38 @@ func date(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 }
 
+func TestNextDayCalucatedCorrectly(t *testing.T) {
+	withWeekendsTestCases := [][]time.Time{
+		{date(2019, time.October, 10), date(2019, time.October, 11)},
+		{date(2019, time.April, 20), date(2019, time.April, 21)},
+		{date(2019, time.January, 6), date(2019, time.January, 7)},
+		{date(2020, time.February, 28), date(2020, time.February, 29)},
+	}
+
+	withoutWeekendsTestCases := [][]time.Time{
+		{date(2019, time.October, 10), date(2019, time.October, 11)},
+		{date(2019, time.April, 20), date(2019, time.April, 22)},
+		{date(2019, time.January, 6), date(2019, time.January, 7)},
+		{date(2020, time.February, 28), date(2020, time.March, 2)},
+	}
+
+	skipWeekends := false
+	for _, tc := range withWeekendsTestCases {
+		nd := nextDay(tc[0], skipWeekends)
+		if nd != tc[1] {
+			t.Errorf("wrong next day expected %v got %v", tc[1], nd)
+		}
+	}
+
+	skipWeekends = true
+	for _, tc := range withoutWeekendsTestCases {
+		nd := nextDay(tc[0], skipWeekends)
+		if nd != tc[1] {
+			t.Errorf("wrong next day expected %v got %v", tc[1], nd)
+		}
+	}
+}
+
 func TestPriorityIsSetCorrectly(t *testing.T) {
 	expectedPriority := PriorityYellow
 	opt := ExportOptions{
