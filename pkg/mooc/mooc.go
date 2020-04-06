@@ -95,6 +95,7 @@ type ExportOptions struct {
 	StartingDate time.Time
 	TasksPerDay  uint32
 	SkipWeekends bool
+	AutoDate     bool
 }
 
 type TodoistExporter struct {
@@ -138,7 +139,9 @@ func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 				Type:     Regular,
 				Date:     taskDate,
 			}
-			taskDate = nextDay(taskDate, e.Opt.SkipWeekends)
+			if e.Opt.AutoDate {
+				taskDate = nextDay(taskDate, e.Opt.SkipWeekends)
+			}
 			tasks = append(tasks, itemTask)
 		}
 	}

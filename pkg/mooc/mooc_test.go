@@ -30,10 +30,15 @@ func init() {
 	}
 }
 
+func date(year int, month time.Month, day int) time.Time {
+	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+}
+
 func TestPriorityIsSetCorrectly(t *testing.T) {
 	expectedPriority := PriorityYellow
 	opt := ExportOptions{
 		TaskPriority: expectedPriority,
+		AutoDate:     true,
 	}
 	exporter := TodoistExporter{Opt: opt}
 
@@ -77,16 +82,17 @@ func TestDatesAreSetCorrectlyIncludingWeekends(t *testing.T) {
 		StartingDate: time.Date(2019, time.October, 10, 0, 0, 0, 0, time.UTC),
 		TasksPerDay:  uint32(1),
 		SkipWeekends: false,
+		AutoDate:     true,
 	}
 	exporter := TodoistExporter{Opt: opt}
 
 	tasks := exporter.toTasks(cs)
 
 	taskDates := []time.Time{
-		time.Date(2019, time.October, 10, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 11, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 12, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 13, 0, 0, 0, 0, time.UTC),
+		date(2019, time.October, 10),
+		date(2019, time.October, 11),
+		date(2019, time.October, 12),
+		date(2019, time.October, 13),
 	}
 
 	checkDates(t, tasks, taskDates)
@@ -97,16 +103,17 @@ func TestDatesAreSetCorrectlyWhenSkippingWeekends(t *testing.T) {
 		StartingDate: time.Date(2019, time.October, 10, 0, 0, 0, 0, time.UTC),
 		TasksPerDay:  uint32(1),
 		SkipWeekends: true,
+		AutoDate:     true,
 	}
 	exporter := TodoistExporter{Opt: opt}
 
 	tasks := exporter.toTasks(cs)
 
 	taskDates := []time.Time{
-		time.Date(2019, time.October, 10, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 11, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 14, 0, 0, 0, 0, time.UTC),
-		time.Date(2019, time.October, 15, 0, 0, 0, 0, time.UTC),
+		date(2019, time.October, 10),
+		date(2019, time.October, 11),
+		date(2019, time.October, 14),
+		date(2019, time.October, 15),
 	}
 
 	checkDates(t, tasks, taskDates)
