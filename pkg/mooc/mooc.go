@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -149,9 +150,21 @@ func (e *TodoistExporter) toTasks(cs CourseSyllabus) []Task {
 	return tasks
 }
 
-func (e *TodoistExporter) taskToCSV(t Task) []string {
+func taskToCSV(t Task) []string {
 	dateFormat := "02/01/2006"
-	return []string{"task", t.Title, string(t.Priority), "", "", "", t.Date.Format(dateFormat), "", ""}
+	priorityStr := strconv.Itoa(int(t.Priority))
+	var defaultDate time.Time
+	dateStr := ""
+
+	if t.Date != defaultDate {
+		dateStr = t.Date.Format(dateFormat)
+	}
+	taskType := "task"
+	if t.Type == TopLevel {
+		taskType = "section"
+	}
+
+	return []string{taskType, t.Title, priorityStr, "", "", "", dateStr, "", ""}
 }
 
 func (e *TodoistExporter) Export(cs CourseSyllabus) ([]byte, error) {
@@ -162,7 +175,7 @@ func (e *TodoistExporter) Export(cs CourseSyllabus) ([]byte, error) {
 
 	tasks := e.toTasks(cs)
 	for _, task := range tasks {
-		records = append(records, e.taskToCSV(task))
+		records = append(records, taskToCSV(task))
 	}
 
 	b := bytes.NewBuffer([]byte{})
