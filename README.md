@@ -30,3 +30,24 @@ Flags:
 
 Use "moocist [command] --help" for more information about a command.
 ```
+
+## Example
+
+As for now, Moocist supports only MOOCs from Coursera.
+To save a syllabus of a given course in the CSV file, pass
+a course slug (last part of the URL) as an argument
+to the template command.
+
+#### [Machine Learning](https://www.coursera.org/learn/machine-learning) on Coursera
+
+URL: https://www.coursera.org/learn/machine-learning
+
+Command:
+
+```shell
+$ moocist template --coursera-slug machine-learning > machine-learning.csv
+```
+
+Gives the following project setup:
+
+![Machine Learning template screenshot](img/ss.png)
