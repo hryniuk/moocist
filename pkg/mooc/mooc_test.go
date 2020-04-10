@@ -34,6 +34,32 @@ func date(year int, month time.Month, day int) time.Time {
 	return time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
 }
 
+func TestSlugIsRetrievedFromPath(t *testing.T) {
+	testcases := [][]string{
+		{"/learn/machine-learning", "machine-learning"},
+	}
+
+	for _, tc := range testcases {
+		slug, err := GetSlugFromURLPath(tc[0])
+		if err != nil || tc[1] != slug {
+			t.Errorf("cannot retrieve correct course slug from path %s:\nexpected %s\ngot %s", tc[0], tc[1], slug)
+		}
+	}
+}
+
+func TestCourseSlugIsRetrievedFromURL(t *testing.T) {
+	testcases := [][]string{
+		{"https://www.coursera.org/learn/machine-learning", "machine-learning"},
+	}
+
+	for _, tc := range testcases {
+		slug, err := GetMOOCSlug(tc[0])
+		if err != nil || tc[1] != slug {
+			t.Errorf("cannot retrieve correct course slug from URL %s:\nexpected %s\ngot %s", tc[0], tc[1], slug)
+		}
+	}
+}
+
 func TestNextDayCalucatedCorrectly(t *testing.T) {
 	withWeekendsTestCases := [][]time.Time{
 		{date(2019, time.October, 10), date(2019, time.October, 11)},

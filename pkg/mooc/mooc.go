@@ -7,9 +7,37 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
+
+func GetSlugFromURLPath(path string) (string, error) {
+	pathParts := strings.Split(path, "/")
+	if len(pathParts) == 0 {
+		return "", errors.New("cannot get slug from empty path")
+	}
+
+	// Assuming /learn/english-principles/...#... structure here.
+	// Could be change to regex.
+	for i, p := range pathParts {
+		if p == "learn" && len(pathParts)-i >= 1 {
+			return pathParts[i+1], nil
+		}
+	}
+
+	return path, nil
+}
+
+func GetMOOCSlug(courseReference string) (string, error) {
+	uriReference, err := url.Parse(courseReference)
+	if err != nil {
+		return "", err
+	}
+
+	return GetSlugFromURLPath(uriReference.Path)
+}
 
 type Item struct {
 	Title    string `json:"title"`
