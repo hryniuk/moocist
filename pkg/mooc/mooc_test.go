@@ -37,6 +37,8 @@ func date(year int, month time.Month, day int) time.Time {
 func TestSlugIsRetrievedFromPath(t *testing.T) {
 	testcases := [][]string{
 		{"/learn/machine-learning", "machine-learning"},
+		{"/learn/modern-world-2/home/welcome", "modern-world-2"},
+		{"/learn/science-of-meditation", "science-of-meditation"},
 	}
 
 	for _, tc := range testcases {
@@ -50,6 +52,9 @@ func TestSlugIsRetrievedFromPath(t *testing.T) {
 func TestCourseSlugIsRetrievedFromURL(t *testing.T) {
 	testcases := [][]string{
 		{"https://www.coursera.org/learn/machine-learning", "machine-learning"},
+		{"https://www.coursera.org/learn/modern-world-2/home/welcome", "modern-world-2"},
+		{"www.coursera.org/learn/project-management-basics", "project-management-basics"},
+		{"coursera.org/learn/science-of-meditation#syllabus", "science-of-meditation"},
 	}
 
 	for _, tc := range testcases {
