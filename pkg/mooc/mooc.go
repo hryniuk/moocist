@@ -13,6 +13,10 @@ import (
 	"time"
 )
 
+// GetSlugFromURLPath retrieves a course slug from given path,
+// as "defined" in the general form
+// [scheme:][//[userinfo@]host][/]path[?query][#fragment]
+// See: https://golang.org/pkg/net/url/#URL
 func GetSlugFromURLPath(path string) (string, error) {
 	pathParts := strings.Split(path, "/")
 	if len(pathParts) == 0 {
