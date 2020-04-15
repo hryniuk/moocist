@@ -4,7 +4,6 @@ import (
 	"strings"
 
 	"github.com/gocolly/colly"
-	log "github.com/sirupsen/logrus"
 
 	"github.com/hryniuk/moocist/pkg/mooc"
 )
@@ -21,16 +20,10 @@ func getCourseSyllabus(url string) (mooc.CourseSyllabus, error) {
 		week := mooc.Week{}
 
 		e.ForEach("h1", func(_ int, f *colly.HTMLElement) {
-			if week.Title != "" {
-				log.Error("setting week title more than once")
-			}
 			week.Title = f.Text
 		})
 
 		e.ForEach("h2", func(_ int, f *colly.HTMLElement) {
-			if week.Title != "" {
-				log.Error("setting week title more than once")
-			}
 			week.Title = f.Text
 		})
 
@@ -40,7 +33,6 @@ func getCourseSyllabus(url string) (mooc.CourseSyllabus, error) {
 				duration := dom.Find("span span").Text()
 				title := strings.TrimSuffix(dom.Text(), duration)
 				item := mooc.Item{Title: title, Duration: duration}
-				log.Debugf("adding task %s %s", title, duration)
 
 				week.Items = append(week.Items, item)
 			}
