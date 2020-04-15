@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/gocolly/colly"
+	"github.com/pkg/errors"
 
 	"github.com/hryniuk/moocist/pkg/mooc"
 )
@@ -43,5 +44,10 @@ func getCourseSyllabus(url string) (mooc.CourseSyllabus, error) {
 
 	c.Visit(url)
 
-	return cs, cs.Validate()
+	err := cs.Validate()
+	if err != nil {
+		return cs, errors.Wrap(err, "scraper error")
+	}
+
+	return cs, nil
 }
