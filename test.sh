@@ -3,7 +3,7 @@
 failed=0
 
 for i in `cat test_slugs.txt`; do
-    ./moocist template --coursera-slug $i &> /dev/null
+    ./moocist $i &> /dev/null
     res=$?
     url="https://www.coursera.org/learn/${i}"
     if [ $res -eq 0 ] ; then
