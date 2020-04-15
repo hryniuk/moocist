@@ -29,30 +29,35 @@ func main() {
 	courseRef := flag.Args()[0]
 	courseSlug, err := mooc.GetMOOCSlug(courseRef)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot retrieve course slug: %s\n", err)
+		os.Exit(1)
 	}
 
 	importer := coursera.SlugImporter{Slug: courseSlug}
 	syllabus, err := importer.Import()
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot download course syllabus: %s\n", err)
+		os.Exit(1)
 	}
 
 	exporter := mooc.TodoistExporter{}
 	b, err := exporter.Export(syllabus)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot export to CSV file: %s\n", err)
+		os.Exit(1)
 	}
 
 	filename := fmt.Sprintf("%s.csv", courseSlug)
 	f, err := os.Create(filename)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot create %s file: %s\n", filename, err)
+		os.Exit(1)
 	}
 	defer f.Close()
 
 	_, err = f.WriteString(string(b))
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("cannot write course template to %s file: %s\n", filename, err)
+		os.Exit(1)
 	}
 }
