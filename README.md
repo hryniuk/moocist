@@ -2,6 +2,7 @@
 
 moocist downloads a syllabus of a given [MOOC](https://en.wikipedia.org/wiki/Massive_open_online_course)
 and converts in into [Todoist](https://todoist.com/) template CSV file, ready to import.
+**Currently Moocist supports only MOOCs from Coursera.**
 
 ## Installation
 
@@ -14,40 +15,34 @@ $ go get github.com/hryniuk/moocist
 ## Usage
 
 ```shell
-moocist  --help
-moocist is tool for converting MOOCs into Todoist template.
-
+$ moocist --help
 Usage:
-  moocist [command]
-
-Available Commands:
-  help        Help about any command
-  import      Import MOOC into JSON file
-  template    Create a Todoist CSV template for given MOOC
-
-Flags:
-  -h, --help   help for moocist
-
-Use "moocist [command] --help" for more information about a command.
+        moocist <course URL or slug>
 ```
 
 ## Example
 
-As for now, Moocist supports only MOOCs from Coursera.
-To save a syllabus of a given course in the CSV file, pass
-a course slug (last part of the URL) as an argument
-to the template command.
+As an example let's take
+[Fundamentals of Graphic Design](https://www.coursera.org/learn/fundamentals-of-graphic-design) course.
 
-#### [Machine Learning](https://www.coursera.org/learn/machine-learning) on Coursera
+Course URL: https://www.coursera.org/learn/fundamentals-of-graphic-design
 
-URL: https://www.coursera.org/learn/machine-learning
+Moocist accepts both different forms of the course's URL and course slug. All these strings
+passed as an argument to `moocist` command should work and produce the file with
+the same content:
 
-Command:
+* `https://www.coursera.org/learn/fundamentals-of-graphic-design`
+* `www.coursera.org/learn/fundamentals-of-graphic-design`
+* `coursera.org/learn/fundamentals-of-graphic-design#enroll`
+* `fundamentals-of-graphic-design`
+
+and this command:
 
 ```shell
-$ moocist template --coursera-slug machine-learning > machine-learning.csv
+$ moocist https://www.coursera.org/learn/fundamentals-of-graphic-design
 ```
 
-Gives the following project setup:
+will produce a Todoist CSV [template file](https://todoist.com/templates/)
+which results in the following project setup in Todoist:
 
 ![Machine Learning template screenshot](img/ss.png)
