@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 	"net/url"
 	"strconv"
 	"strings"
@@ -215,7 +214,6 @@ func (e *TodoistExporter) Export(cs CourseSyllabus) ([]byte, error) {
 	w.WriteAll(records)
 
 	if err := w.Error(); err != nil {
-		log.Fatalln("error writing csv:", err)
 		return []byte{}, err
 	}
 	return b.Bytes(), nil
