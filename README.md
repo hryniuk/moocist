@@ -15,9 +15,11 @@ $ go get github.com/hryniuk/moocist
 ## Usage
 
 ```shell
-$ moocist --help
+$ moocist -help
 Usage:
-        moocist <course URL or slug>
+        ./moocist <course URL or slug>
+  -priority int
+        priority of generated tasks 4 (grey) - 1 (red)
 ```
 
 ## Example

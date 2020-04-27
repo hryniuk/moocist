@@ -7,7 +7,6 @@ import (
 	"os"
 
 	"github.com/hryniuk/moocist/pkg/coursera"
-
 	"github.com/hryniuk/moocist/pkg/mooc"
 )
 
@@ -19,6 +18,9 @@ func usage() {
 
 func main() {
 	flag.Usage = usage
+
+	priority := flag.Int("priority", int(mooc.PriorityNone), "priority of generated tasks 4 (grey) - 1 (red)")
+
 	flag.Parse()
 
 	if flag.NArg() != 1 {
@@ -40,7 +42,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	exporter := mooc.TodoistExporter{}
+	taskPriority := mooc.PriorityNone
+	if 1 <= *priority && *priority <= 4 {
+		taskPriority = mooc.Priority(*priority)
+	}
+
+	opt := mooc.ExportOptions{TaskPriority: mooc.Priority(taskPriority)}
+	exporter := mooc.TodoistExporter{Opt: opt}
 	b, err := exporter.Export(syllabus)
 	if err != nil {
 		log.Printf("cannot export to CSV file: %s\n", err)
