@@ -11,6 +11,8 @@ import (
 	"github.com/hryniuk/moocist/pkg/mooc"
 )
 
+//go:generate go-bindata -pkg api -o pkg/api/data.go static/
+
 func usage() {
 	fmt.Fprintf(os.Stderr, "Usage:\n")
 	fmt.Fprintf(os.Stderr, "\t%s <course URL or slug>\n", os.Args[0])

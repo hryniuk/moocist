@@ -1,0 +1,12 @@
+name: build and test
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: make
+    runs-on: ubuntu-latest
+    container: golang:1.14-stretch
+    steps:
+    - uses: actions/checkout@v2
+    - run: go get -u github.com/go-bindata/go-bindata/...
+    - run: make build

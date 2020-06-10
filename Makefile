@@ -3,7 +3,7 @@ default: build ut ## Default target - builds and runs UTs
 
 .PHONY: generate
 generate: ## Generate .go files with static directory, uses go-bindata
-	go-bindata -pkg api -o pkg/api/data.go static/
+	go generate
 
 .PHONY: build
 build: generate ## Builds moocist binary
