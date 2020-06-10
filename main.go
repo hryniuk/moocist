@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/hryniuk/moocist/pkg/api"
 	"github.com/hryniuk/moocist/pkg/coursera"
 	"github.com/hryniuk/moocist/pkg/mooc"
 )
@@ -19,15 +20,17 @@ func usage() {
 func main() {
 	flag.Usage = usage
 
+	addr := flag.String("addr", "", "HTTP service address, when set, ignores the rest of options")
 	priority := flag.Int("priority", int(mooc.PriorityNone), "priority of generated tasks 4 (grey) - 1 (red)")
 
 	flag.Parse()
 
-	if flag.NArg() != 1 {
-		flag.Usage()
-		os.Exit(1)
-
+	if len(*addr) > 0 {
+		s := api.NewServer()
+		s.Run(*addr)
+		return
 	}
+
 	courseRef := flag.Args()[0]
 	courseSlug, err := mooc.GetMOOCSlug(courseRef)
 	if err != nil {
