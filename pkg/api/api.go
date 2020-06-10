@@ -25,6 +25,19 @@ type Server struct {
 	Router http.Handler
 }
 
+func (s *Server) root() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		resp := `Use these endpoints:
+/api/template/<course-slug> to get Todoist template of given Coursera course as CSV file
+/api/syllabus/<course-slug> to get syllabus of given Coursera course as JSON
+`
+		w.Write([]byte(resp))
+	}
+}
+
 func (s *Server) syllabus() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -89,6 +102,7 @@ func (s *Server) template() http.HandlerFunc {
 }
 
 func (s *Server) routes(router *mux.Router) {
+	router.HandleFunc("/", s.root()).Methods("GET")
 	router.HandleFunc("/api/syllabus/{slug}", s.syllabus()).Methods("GET")
 	router.HandleFunc("/api/template/{slug}", s.template()).Methods("GET")
 }
