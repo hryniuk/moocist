@@ -1,3 +1,5 @@
+![build](https://github.com/hryniuk/moocist/workflows/build%20and%20test/badge.svg?branch=master)
+
 # moocist
 
 moocist downloads a syllabus of a given [MOOC](https://en.wikipedia.org/wiki/Massive_open_online_course)
