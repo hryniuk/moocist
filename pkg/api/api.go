@@ -3,6 +3,8 @@ package api
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"html/template"
 	"net/http"
 	"time"
 
@@ -21,20 +23,40 @@ const (
 	requestIDKey key = 0
 )
 
+type Endpoint struct {
+	Path string
+	Desc string
+}
+
 type Server struct {
-	Router http.Handler
+	Router    http.Handler
+	Endpoints []Endpoint
 }
 
 func (s *Server) root() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		resp := `Use these endpoints:
-/api/template/<course-slug> to get Todoist template of given Coursera course as CSV file
-/api/syllabus/<course-slug> to get syllabus of given Coursera course as JSON
-`
-		w.Write([]byte(resp))
+		resp, err := Asset("static/index.html")
+		fmt.Println(string(resp))
+		if err != nil {
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		t, err := template.New("foo").Parse(string(resp))
+		if err != nil {
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/html")
+		err = t.Execute(w, s.Endpoints)
+		if err != nil {
+			log.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	}
 }
 
@@ -151,7 +173,11 @@ func tracing(h http.Handler) http.Handler {
 
 func NewServer() *Server {
 	router := mux.NewRouter()
-	s := &Server{}
+	endpoints := []Endpoint{
+		Endpoint{Path: "/api/template/<course-slug>", Desc: "get Todoist template of given Coursera course as CSV file"},
+		Endpoint{Path: "/api/syllabus/<course-slug>", Desc: "get syllabus of given Coursera course as JSON"},
+	}
+	s := &Server{Endpoints: endpoints}
 	s.routes(router)
 	s.Router = tracing(logging(handleCORS(router)))
 
